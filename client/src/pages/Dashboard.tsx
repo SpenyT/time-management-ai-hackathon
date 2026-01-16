@@ -1,3 +1,4 @@
+import FileManager from '@/components/FileManager';
 import SpeechToText from '@/components/SpeechToText';
 
 
@@ -17,8 +18,6 @@ export default function Dashboard() {
         {/* Main Grid */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
           <SpeechToText 
-            enableAutoSend={true}
-            autoSendDelay={3000}
             onAutoSend={(text) => {
               console.log('Auto-sent:', text);
             }}
@@ -26,6 +25,7 @@ export default function Dashboard() {
               console.log('Current text:', text);
             }}
           />
+          <FileManager />
         </div>
       </div>
     </div>
