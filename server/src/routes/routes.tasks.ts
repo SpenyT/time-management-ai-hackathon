@@ -10,6 +10,8 @@ const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY
 });
 
+const DEFAULT_MODEL = 'gpt-4o-mini-2024-07-18';
+
 const storage = multer.memoryStorage();
 const upload = multer({ 
   storage,
@@ -53,7 +55,7 @@ tasksRouter.post('/api/tasks/extract', async (req: Request, res: Response) => {
                         Only return the JSON array, no other text.`;
 
     const completion = await openai.chat.completions.create({
-      model: 'gpt-4o-mini-2024-07-18',
+      model: DEFAULT_MODEL,
       messages: [{ role: 'user', content: prompt }],
       temperature: 0.3,
       response_format: { type: 'json_object' }
@@ -124,7 +126,7 @@ Return JSON:
 }`;
 
           const completion = await openai.chat.completions.create({
-            model: 'gpt-4-turbo-preview',
+            model: DEFAULT_MODEL,
             messages: [{ role: 'user', content: prompt }],
             temperature: 0.3,
             response_format: { type: 'json_object' }
@@ -218,7 +220,7 @@ Return JSON:
 }`;
 
     const completion = await openai.chat.completions.create({
-      model: 'gpt-4-turbo-preview',
+      model: DEFAULT_MODEL,
       messages: [{ role: 'user', content: prompt }],
       temperature: 0.5,
       response_format: { type: 'json_object' }
