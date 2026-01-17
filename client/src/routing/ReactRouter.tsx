@@ -4,7 +4,7 @@ import RootLayout from "@/routing/RootLayout";
 import ErrorBoundary from "@/pages/error/ErrorBoundary";
 import NotFound from "@/pages/error/NotFound";
 
-import HomePage from "@/pages/HomePage";
+import Dashboard from "@/pages/Dashboard";
 
 const router = createBrowserRouter([
   {
@@ -13,7 +13,7 @@ const router = createBrowserRouter([
     Component: RootLayout,
     errorElement: <ErrorBoundary/>,
     children: [
-      { id: "home", index: true, Component: HomePage },
+      { id: "home", index: true, Component: Dashboard },
       { id: "not-found", path: "*", Component: NotFound },
     ]
   }
