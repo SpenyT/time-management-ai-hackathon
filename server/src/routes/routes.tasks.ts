@@ -22,7 +22,7 @@ const upload = multer({
 const tasksRouter = Router();
 
 // POST /api/tasks/extract - Extract tasks from speech/text
-tasksRouter.post('/api/tasks/extract', async (req: Request, res: Response) => {
+tasksRouter.post('/extract', async (req: Request, res: Response) => {
   try {
     const { text, userContext } = req.body;
 
@@ -89,7 +89,7 @@ tasksRouter.post('/api/tasks/extract', async (req: Request, res: Response) => {
 
 
 // POST /api/tasks/analyze-files - Analyze course files for difficulty
-tasksRouter.post('/api/tasks/analyze-files', 
+tasksRouter.post('/analyze-files', 
   upload.array('files', 5), 
   async (req: Request, res: Response) => {
     try {
@@ -167,78 +167,6 @@ Return JSON:
         details: error.message 
       });
     }
-});
-
-// POST /api/schedule/optimize - Create optimized daily schedule
-tasksRouter.post('/api/schedule/optimize', async (req: Request, res: Response) => {
-  try {
-    const { 
-      tasks, 
-      startTime = '09:00', 
-      endTime = '17:00',
-      strategy = 'balanced', // balanced, deadline, priority, quick-wins
-      breakDuration = 15 
-    } = req.body;
-
-    if (!tasks || tasks.length === 0) {
-      return res.status(400).json({ error: 'Tasks array is required' });
-    }
-
-    const prompt = `You are a time management optimization AI. Create an optimal daily schedule.
-
-Tasks to schedule:
-${JSON.stringify(tasks, null, 2)}
-
-Schedule parameters:
-- Available time: ${startTime} to ${endTime}
-- Strategy: ${strategy}
-- Break duration: ${breakDuration} minutes between tasks
-
-Optimization strategies:
-- balanced: Mix of priority, deadline, and duration
-- deadline: Focus on nearest deadlines
-- priority: High priority tasks first
-- quick-wins: Shortest tasks first for momentum
-
-Create a schedule that:
-1. Fits within the time window
-2. Includes breaks
-3. Considers task difficulty (harder tasks when energy is high)
-4. Groups similar tasks when possible
-5. Respects deadlines
-
-Return JSON:
-{
-  "schedule": [{
-    "startTime": "HH:MM",
-    "endTime": "HH:MM",
-    "task": {task object},
-    "reason": "why scheduled at this time"
-  }],
-  "unscheduledTasks": [{task object}],
-  "optimizationStrategy": "explanation of approach used"
-}`;
-
-    const completion = await openai.chat.completions.create({
-      model: DEFAULT_MODEL,
-      messages: [{ role: 'user', content: prompt }],
-      temperature: 0.5,
-      response_format: { type: 'json_object' }
-    });
-
-    const schedule: ScheduleResponse = JSON.parse(
-      completion.choices[0].message.content || '{}'
-    );
-
-    res.json(schedule);
-
-  } catch (error: any) {
-    console.error('Schedule optimization error:', error);
-    res.status(500).json({ 
-      error: 'Failed to optimize schedule',
-      details: error.message 
-    });
-  }
 });
 
 export default tasksRouter;
